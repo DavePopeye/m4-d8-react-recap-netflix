@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-  Container,
-  Row,
-  Col,
-  DropdownButton,
-  Dropdown,
-  Alert,
-} from "react-bootstrap";
+import { Container, Row, Col, Dropdown, Alert } from "react-bootstrap";
 import Gallery from "./Gallery";
 
 class Home extends Component {
@@ -14,6 +7,9 @@ class Home extends Component {
     super(props);
     this.state = {
       transformers: [],
+      spiderMan: [],
+      matrix: [],
+      loading: true,
       error: false,
     };
   }
@@ -21,11 +17,26 @@ class Home extends Component {
   // url = "http://www.omdbapi.com/?apikey=85a2b045";
 
   componentDidMount() {
-    fetch("http://www.omdbapi.com/?apikey=85a2b045" + "&s=transformers")
-      .then((response) => response.json())
-      .then((responseObject) =>
-        this.setState({ transformers: responseObject.Search })
-      )
+    Promise.all([
+      fetch("http://www.omdbapi.com/?apikey=85a2b045" + "&s=transformers")
+        .then((response) => response.json())
+        .then((responseObject) =>
+          this.setState({ transformers: responseObject.Search })
+        ),
+
+      fetch("http://www.omdbapi.com/?apikey=85a2b045" + "&s=spider%20man")
+        .then((response) => response.json())
+        .then((responseObject) =>
+          this.setState({ spiderMan: responseObject.Search })
+        ),
+
+      fetch("http://www.omdbapi.com/?apikey=85a2b045" + "&s=matrix")
+        .then((response) => response.json())
+        .then((responseObject) =>
+          this.setState({ matrix: responseObject.Search })
+        ),
+    ])
+      .then(() => this.setState({ loading: false }))
       .catch((err) => {
         this.setState({ error: true });
         console.log("An error has occurred:", err);
@@ -84,7 +95,18 @@ class Home extends Component {
           <div>
             <Gallery
               title="Transformers"
+              loading={this.state.loading}
               movies={this.state.transformers.slice(0, 6)}
+            />
+            <Gallery
+              title="Spider Man"
+              loading={this.state.loading}
+              movies={this.state.spiderMan.slice(0, 6)}
+            />
+            <Gallery
+              title="Matrix"
+              loading={this.state.loading}
+              movies={this.state.matrix.slice(0, 6)}
             />
 
             {/* <Gallery title="Trending" imageSrc="/assets/8.png" />
