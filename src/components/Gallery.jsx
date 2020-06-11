@@ -18,7 +18,7 @@ function Gallery({ title, movies, loading, comments, fetchComments }) {
           : movies.map((movie) => (
               <Movie
                 movie={movie}
-                key={movie.id}
+                key={movie.imdbID}
                 comments={comments}
                 fetchComments={fetchComments}
               />

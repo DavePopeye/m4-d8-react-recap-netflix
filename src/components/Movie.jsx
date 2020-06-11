@@ -1,7 +1,6 @@
 import React from "react";
-import { Col, Image, Modal, Button } from "react-bootstrap";
+import { Col, Image, Modal, Button, Spinner } from "react-bootstrap";
 import CommentList from "./CommentList";
-import { Link } from "react-router-dom";
 class Movie extends React.Component {
   constructor(props) {
     super(props);
@@ -17,21 +16,28 @@ class Movie extends React.Component {
   };
 
   render() {
+    const { comments, movie } = this.props;
     return (
       <Col className="mb-2">
         <Image
           fluid
-          src={this.props.movie.Poster}
-          alt={this.props.movie.Title}
-          onClick={() => this.handleClick(this.props.movie.imdbID)}
+          src={movie.Poster}
+          alt={movie.Title}
+          onClick={() => this.handleClick(movie.imdbID)}
         />
         <Modal show={this.state.isModalVisible} onHide={this.handleClick}>
           <Modal.Header closeButton>
             <Modal.Title>Modal heading</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {this.props.comments.length > 0 && (
-              <CommentList comments={this.props.comments} />
+            {comments.length > 0 ? (
+              <CommentList comments={comments} />
+            ) : (
+              <div className="d-flex justify-content-center align-items-center">
+                <Spinner animation="border" role="status" variant="success">
+                  <span className="sr-only">Loading...</span>
+                </Spinner>
+              </div>
             )}
           </Modal.Body>
           <Modal.Footer>
