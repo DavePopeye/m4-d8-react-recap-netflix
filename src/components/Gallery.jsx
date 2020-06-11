@@ -2,7 +2,7 @@ import React from "react";
 import { Row, Col, Spinner } from "react-bootstrap";
 import Movie from "./Movie";
 
-function Gallery({ title, movies, loading }) {
+function Gallery({ title, movies, loading, comments, fetchComments }) {
   return (
     <div>
       <h4>{title}</h4>
@@ -15,7 +15,14 @@ function Gallery({ title, movies, loading }) {
                 </Spinner>
               </Col>
             ))
-          : movies.map((movie) => <Movie movie={movie} key={movie.id} />)}
+          : movies.map((movie) => (
+              <Movie
+                movie={movie}
+                key={movie.imdbID}
+                comments={comments}
+                fetchComments={fetchComments}
+              />
+            ))}
         }
       </Row>
     </div>

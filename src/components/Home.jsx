@@ -6,11 +6,12 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      transformers: [],
+      harryPotter: [],
       spiderMan: [],
       matrix: [],
       loading: true,
       error: false,
+      comments: [],
     };
   }
 
@@ -18,10 +19,10 @@ class Home extends Component {
 
   componentDidMount() {
     Promise.all([
-      fetch("http://www.omdbapi.com/?apikey=85a2b045" + "&s=transformers")
+      fetch("http://www.omdbapi.com/?apikey=85a2b045" + "&s=harry%20potter")
         .then((response) => response.json())
         .then((responseObject) =>
-          this.setState({ transformers: responseObject.Search })
+          this.setState({ harryPotter: responseObject.Search })
         ),
 
       fetch("http://www.omdbapi.com/?apikey=85a2b045" + "&s=spider%20man")
@@ -42,6 +43,17 @@ class Home extends Component {
         console.log("An error has occurred:", err);
       });
   }
+
+  fetchComments = async (movieID) => {
+    const commentsUrl = "https://striveschool.herokuapp.com/api/comments/";
+    const comments = await fetch(commentsUrl + movieID, {
+      headers: new Headers({
+        Authorization: "Basic dXNlcjc6M1VVNWRZRnZlblJ1UlA3RQ==",
+      }),
+    }).then((resp) => resp.json());
+
+    this.setState({ comments });
+  };
 
   render() {
     // console.log("render method");
@@ -94,19 +106,25 @@ class Home extends Component {
         {!this.state.error && (
           <div>
             <Gallery
-              title="Transformers"
+              title="Harry Potter"
               loading={this.state.loading}
-              movies={this.state.transformers.slice(0, 6)}
+              movies={this.state.harryPotter.slice(0, 6)}
+              comments={this.state.comments}
+              fetchComments={this.fetchComments}
             />
             <Gallery
               title="Spider Man"
               loading={this.state.loading}
               movies={this.state.spiderMan.slice(0, 6)}
+              comments={this.state.comments}
+              fetchComments={this.fetchComments}
             />
             <Gallery
               title="Matrix"
               loading={this.state.loading}
               movies={this.state.matrix.slice(0, 6)}
+              comments={this.state.comments}
+              fetchComments={this.fetchComments}
             />
 
             {/* <Gallery title="Trending" imageSrc="/assets/8.png" />
