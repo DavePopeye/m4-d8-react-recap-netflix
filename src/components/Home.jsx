@@ -1,17 +1,35 @@
 import React, { Component } from "react";
-import { Container, Row, Col, DropdownButton, Dropdown } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  DropdownButton,
+  Dropdown,
+  Alert,
+} from "react-bootstrap";
 import Gallery from "./Gallery";
 
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayGallery: true,
+      transformers: [],
+      error: false,
     };
   }
 
+  // url = "http://www.omdbapi.com/?apikey=85a2b045";
+
   componentDidMount() {
-    // console.log("componentDidMount");
+    fetch("http://www.omdbapi.com/?apikey=85a2b045" + "&s=transformers")
+      .then((response) => response.json())
+      .then((responseObject) =>
+        this.setState({ transformers: responseObject.Search })
+      )
+      .catch((err) => {
+        this.setState({ error: true });
+        console.log("An error has occurred:", err);
+      });
   }
 
   render() {
@@ -56,14 +74,21 @@ class Home extends Component {
             </Row>
 
         <Gallery /> */}
+        {this.state.error && (
+          <Alert variant="danger">
+            An error has occurred, please try again later
+          </Alert>
+        )}
 
-        {this.state.displayGallery && (
+        {!this.state.error && (
           <div>
-            {/* This Gallery will not receive props.title inside, only props.imageSrc */}
-            <Gallery imageSrc="/assets/6.png" />
+            <Gallery
+              title="Transformers"
+              movies={this.state.transformers.slice(0, 6)}
+            />
 
-            <Gallery title="Trending" imageSrc="/assets/8.png" />
-            <Gallery title="Horror" imageSrc="/assets/7.png" />
+            {/* <Gallery title="Trending" imageSrc="/assets/8.png" />
+            <Gallery title="Horror" imageSrc="/assets/7.png" /> */}
           </div>
         )}
       </Container>
